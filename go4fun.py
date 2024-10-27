@@ -27,13 +27,14 @@ STONE_COLOR_WHITE_TRANSPARENT = (245, 240, 230, 128)
 
 
 game = Position()
-
+print(game.to_play)
 
 # sera effacé plus tard 
 players = ['RED','BLACK', 'BLUE', 'WHITE']
-color_trans_stone = {-2:STONE_COLOR_RED_TRANSPARENT,-1:STONE_COLOR_BLACK_TRANSPARENT,2:STONE_COLOR_BLUE_TRANSPARENT,1:STONE_COLOR_WHITE_TRANSPARENT}
+color_trans_stone = {-2:STONE_COLOR_RED_TRANSPARENT,1:STONE_COLOR_BLACK_TRANSPARENT,2:STONE_COLOR_BLUE_TRANSPARENT,-1:STONE_COLOR_WHITE_TRANSPARENT}
 player_turn = 0
 moves = {}
+print(color_trans_stone[game.to_play])
 
 # Boucle principale du jeu
 running = True
@@ -55,7 +56,9 @@ while running:
             """
             try:
                 #On propose au moteur de jouer le coup !
-                game.play_move((grid_y - 1,grid_x - 1))
+                game = game.play_move((grid_y-1,grid_x-1))
+                print(game.board)
+                print(game)
             except:
                 print("erreur, coup illegal")
     
@@ -69,22 +72,21 @@ while running:
         # Lignes verticales
         pygame.draw.line(screen, LINE_COLOR, ((i + 1) * CELL_SIZE, CELL_SIZE), ((i + 1) * CELL_SIZE, WINDOW_SIZE - CELL_SIZE), 2)
 
-
     # definir la couleur des pierre et les dessiner !
     for y in range(GRID_SIZE):
         for x in range(GRID_SIZE):
             if game.board[y][x] == -2:
                 stone_color = STONE_COLOR_RED
-                pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
+                pygame.draw.circle(screen, stone_color, ((x+1) * CELL_SIZE, (y+1) * CELL_SIZE), CELL_SIZE // 2.2)
             elif game.board[y][x] == -1:
-                stone_color = STONE_COLOR_BLACK
-                pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
-            elif game.board[y][x] == 1:
                 stone_color = STONE_COLOR_WHITE
-                pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
+                pygame.draw.circle(screen, stone_color, ((x+1) * CELL_SIZE, (y+1) * CELL_SIZE), CELL_SIZE // 2.2)
+            elif game.board[y][x] == 1:
+                stone_color = STONE_COLOR_BLACK
+                pygame.draw.circle(screen, stone_color, ((x+1) * CELL_SIZE, (y+1) * CELL_SIZE), CELL_SIZE // 2.2)
             elif game.board[y][x] == 2:
                 stone_color = STONE_COLOR_BLUE
-                pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
+                pygame.draw.circle(screen, stone_color, ((x+1) * CELL_SIZE, (y+1) * CELL_SIZE), CELL_SIZE // 2.2)
 
 
     # Récupérer la position de la souris
