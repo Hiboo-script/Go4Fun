@@ -1,0 +1,3 @@
+[submodule "G4C"]
+	path = G4C
+	url = git@github.com:Hiboo-script/G4C.git

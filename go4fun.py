@@ -1,4 +1,6 @@
 import pygame
+import numpy as np
+from G4C.go4.go4 import *
 import sys
 
 # Initialisation de Pygame
@@ -24,9 +26,12 @@ STONE_COLOR_BLUE_TRANSPARENT = (30, 50, 250, 128)
 STONE_COLOR_WHITE_TRANSPARENT = (245, 240, 230, 128)
 
 
+game = Position()
+
+
 # sera effacé plus tard 
 players = ['RED','BLACK', 'BLUE', 'WHITE']
-color_trans_stone = [STONE_COLOR_RED_TRANSPARENT,STONE_COLOR_BLACK_TRANSPARENT,STONE_COLOR_BLUE_TRANSPARENT,STONE_COLOR_WHITE_TRANSPARENT]
+color_trans_stone = {-2:STONE_COLOR_RED_TRANSPARENT,-1:STONE_COLOR_BLACK_TRANSPARENT,2:STONE_COLOR_BLUE_TRANSPARENT,1:STONE_COLOR_WHITE_TRANSPARENT}
 player_turn = 0
 moves = {}
 
@@ -48,9 +53,11 @@ while running:
             tuple de position sur le goban et jouer le 
             coup avec une instance de la classe Position()
             """
-            moves[(grid_x, grid_y)] = players[player_turn%4]
-            player_turn += 1
-
+            try:
+                #On propose au moteur de jouer le coup !
+                game.play_move((grid_y - 1,grid_x - 1))
+            except:
+                print("erreur, coup illegal")
     
     # Afficher le fond
     screen.fill(BACKGROUND_COLOR)
@@ -64,16 +71,20 @@ while running:
 
 
     # definir la couleur des pierre et les dessiner !
-    for (x,y), player in moves.items():
-        if player == 'RED':
-            stone_color = STONE_COLOR_RED
-        elif player == 'BLUE':
-            stone_color = STONE_COLOR_BLUE
-        elif player == 'BLACK':
-            stone_color = STONE_COLOR_BLACK
-        else:
-            stone_color = STONE_COLOR_WHITE
-        pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
+    for y in range(GRID_SIZE):
+        for x in range(GRID_SIZE):
+            if game.board[y][x] == -2:
+                stone_color = STONE_COLOR_RED
+                pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
+            elif game.board[y][x] == -1:
+                stone_color = STONE_COLOR_BLACK
+                pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
+            elif game.board[y][x] == 1:
+                stone_color = STONE_COLOR_WHITE
+                pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
+            elif game.board[y][x] == 2:
+                stone_color = STONE_COLOR_BLUE
+                pygame.draw.circle(screen, stone_color, (x * CELL_SIZE, y * CELL_SIZE), CELL_SIZE // 2.2)
 
 
     # Récupérer la position de la souris
@@ -85,7 +96,7 @@ while running:
 
     # Afficher la pierre transparente en survol
     stone_surface = pygame.Surface((CELL_SIZE, CELL_SIZE), pygame.SRCALPHA)
-    pygame.draw.circle(stone_surface, color_trans_stone[player_turn%4], (CELL_SIZE // 2, CELL_SIZE // 2), CELL_SIZE // 2.2)
+    pygame.draw.circle(stone_surface, color_trans_stone[game.to_play], (CELL_SIZE // 2, CELL_SIZE // 2), CELL_SIZE // 2.2)
     screen.blit(stone_surface, (closest_x - CELL_SIZE // 2, closest_y - CELL_SIZE // 2))
 
     # Rafraîchir l'écran
