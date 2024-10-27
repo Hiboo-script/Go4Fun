@@ -29,12 +29,8 @@ STONE_COLOR_WHITE_TRANSPARENT = (245, 240, 230, 128)
 game = Position()
 print(game.to_play)
 
-# sera effacé plus tard 
-players = ['RED','BLACK', 'BLUE', 'WHITE']
+# Index entre couleur de la pierre transparente et couleur du joueur
 color_trans_stone = {-2:STONE_COLOR_RED_TRANSPARENT,1:STONE_COLOR_BLACK_TRANSPARENT,2:STONE_COLOR_BLUE_TRANSPARENT,-1:STONE_COLOR_WHITE_TRANSPARENT}
-player_turn = 0
-moves = {}
-print(color_trans_stone[game.to_play])
 
 # Boucle principale du jeu
 running = True
@@ -49,18 +45,21 @@ while running:
             grid_x = round(mouse_x / CELL_SIZE)
             grid_y = round(mouse_y / CELL_SIZE)
 
-            """
-            Ici il faudra transformer ces coordonnées en
-            tuple de position sur le goban et jouer le 
-            coup avec une instance de la classe Position()
-            """
+            
             try:
                 #On propose au moteur de jouer le coup !
                 game = game.play_move((grid_y-1,grid_x-1))
-                print(game.board)
                 print(game)
-            except:
-                print("erreur, coup illegal")
+            
+            except KoError as e:
+                print("Erreur de ko :", e)
+        
+            except OccupiedSpaceError as e:
+                print("Erreur d'espace occupé :", e)
+        
+            except NoLibertyError as e:
+                print("Erreur de liberté :", e)
+    
     
     # Afficher le fond
     screen.fill(BACKGROUND_COLOR)
